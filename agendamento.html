@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ávila Hidráulicas | Agendamento</title><link rel="stylesheet" href="style.css"></head>
+<body><header><div class="container header-content"><a class="brand" href="index.html"><span class="brand-mark">AH</span><span class="brand-copy"><strong>Ávila Hidráulicas</strong><span>Instalações e manutenção</span></span></a><nav class="nav"><a href="index.html">Serviços</a></nav></div></header>
+<main class="container">
+<div class="steps"><span class="step">1. Serviço</span><span class="step active">2. Data e horário</span><span class="step">3. Seus dados</span><span class="step">4. Confirmação</span><span class="step">5. OS</span></div>
+<div class="section-head"><div><h2>Escolha data e horário</h2><p>Selecione uma disponibilidade para o atendimento.</p></div></div>
+<div class="form-layout"><form onsubmit="salvarAgendamento(event)">
+  <div class="field"><label for="servico">Serviço</label><select id="servico" required></select></div>
+  <div class="row"><div class="field"><label for="data">Data</label><input type="date" id="data" required></div><div class="field"><label for="horario">Horário</label><select id="horario" required></select></div></div>
+  <div class="actions"><a class="btn secondary" href="index.html">Voltar</a><button class="btn" type="submit">Continuar</button></div>
+</form><aside id="resumo-agendamento" class="summary"></aside></div>
+</main><footer>Ávila Hidráulicas — projeto demonstrativo</footer><script src="app.js"></script></body></html>

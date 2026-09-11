@@ -1,0 +1,9 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ávila Hidráulicas | Dados do cliente</title><link rel="stylesheet" href="style.css"></head>
+<body><header><div class="container header-content"><a class="brand" href="index.html"><span class="brand-mark">AH</span><span class="brand-copy"><strong>Ávila Hidráulicas</strong><span>Instalações e manutenção</span></span></a></div></header>
+<main class="container"><div class="steps"><span class="step">1. Serviço</span><span class="step">2. Data e horário</span><span class="step active">3. Seus dados</span><span class="step">4. Confirmação</span><span class="step">5. OS</span></div>
+<div class="section-head"><div><h2>Dados para o atendimento</h2><p>Não é necessário criar uma conta.</p></div></div>
+<form onsubmit="salvarCliente(event)"><div class="row"><div class="field"><label for="nome">Nome completo</label><input id="nome" required></div><div class="field"><label for="telefone">Telefone</label><input id="telefone" placeholder="(00) 00000-0000" required></div></div>
+<div class="row"><div class="field"><label for="email">E-mail</label><input id="email" type="email" required></div><div class="field"><label for="endereco">Endereço do atendimento</label><input id="endereco" placeholder="Rua, número, bairro e cidade" required></div></div>
+<div class="field"><label for="observacoes">Observações</label><textarea id="observacoes" rows="4" placeholder="Descreva o problema ou alguma informação importante para a equipe."></textarea></div>
+<div class="actions"><a class="btn secondary" href="agendamento.html">Voltar</a><button class="btn" type="submit">Revisar agendamento</button></div></form></main>
+<footer>Ávila Hidráulicas — projeto demonstrativo</footer><script src="app.js"></script></body></html>
