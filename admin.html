@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ávila Hidráulicas | Painel Administrativo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="container header-content">
+  <a class="brand" href="index.html"><span class="brand-mark">AH</span><span class="brand-copy"><strong>Ávila Hidráulicas</strong><span>Instalações e manutenção</span></span></a>
+  <nav class="nav"><a href="index.html">Serviços</a><a href="admin.html">Painel Administrativo</a></nav>
+</div></header>
+
+<main class="container" id="painel-admin">
+  <div class="section-head">
+    <div>
+      <h2>Painel Administrativo</h2>
+      <p>Gerencie funcionários, serviços, clientes e a atribuição de atendimentos.</p>
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="tab-btn active" data-tab="funcionarios" onclick="trocarAba('funcionarios')">Funcionários</button>
+    <button class="tab-btn" data-tab="servicos" onclick="trocarAba('servicos')">Serviços</button>
+    <button class="tab-btn" data-tab="clientes" onclick="trocarAba('clientes')">Clientes</button>
+    <button class="tab-btn" data-tab="os" onclick="trocarAba('os')">Ordens de Serviço</button>
+  </div>
+
+  <!-- RF15 - Gerenciamento de Funcionários -->
+  <section id="aba-funcionarios" class="admin-panel">
+    <div class="form-layout">
+      <form id="form-funcionario" onsubmit="salvarFuncionario(event)">
+        <input type="hidden" id="funcionario-id">
+
+        <div class="row">
+          <div class="field"><label for="funcionario-nome">Nome completo</label><input id="funcionario-nome" required></div>
+          <div class="field">
+            <label for="funcionario-cargo">Cargo</label>
+            <select id="funcionario-cargo" required>
+              <option value="Técnico">Técnico</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Gerente">Gerente</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field"><label for="funcionario-telefone">Telefone</label><input id="funcionario-telefone" placeholder="(00) 00000-0000" required></div>
+          <div class="field"><label for="funcionario-email">E-mail</label><input id="funcionario-email" type="email" required></div>
+        </div>
+
+        <div class="field">
+          <label>Especialidades (categorias de serviço que pode atender)</label>
+          <div id="funcionario-especialidades" class="checkbox-group"></div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="funcionario-status">Status</label>
+            <select id="funcionario-status">
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn secondary" onclick="cancelarEdicaoFuncionario()">Limpar</button>
+          <button class="btn" type="submit" id="funcionario-submit">Cadastrar funcionário</button>
+        </div>
+      </form>
+
+      <aside class="summary">
+        <h3>Hierarquia</h3>
+        <p>Gerente → Supervisor → Técnico</p>
+        <p>O cargo e as especialidades cadastradas orientam a atribuição automática de atendimentos: ao confirmar um agendamento, o sistema seleciona um funcionário ativo com a especialidade compatível, alternando entre os disponíveis.</p>
+      </aside>
+    </div>
+
+    <div id="lista-funcionarios" class="table-wrap" style="margin-top:24px"></div>
+  </section>
+
+  <!-- RF19 - Cadastro de serviço -->
+  <section id="aba-servicos" class="admin-panel" hidden>
+    <div class="form-layout">
+      <form id="form-servico" onsubmit="salvarServico(event)">
+        <input type="hidden" id="servico-id">
+
+        <div class="row">
+          <div class="field"><label for="servico-nome">Nome do serviço</label><input id="servico-nome" required></div>
+          <div class="field"><label for="servico-categoria">Categoria</label><input id="servico-categoria" placeholder="Ex: Manutenção, Instalação" required></div>
+        </div>
+
+        <div class="row">
+          <div class="field"><label for="servico-duracao">Duração estimada</label><input id="servico-duracao" placeholder="Ex: 2 h" required></div>
+          <div class="field"><label for="servico-valor">Valor (R$)</label><input id="servico-valor" type="number" min="0" step="0.01" required></div>
+        </div>
+
+        <div class="field"><label for="servico-descricao">Descrição</label><textarea id="servico-descricao" rows="3"></textarea></div>
+
+        <div class="actions">
+          <button type="button" class="btn secondary" onclick="cancelarEdicaoServico()">Limpar</button>
+          <button class="btn" type="submit" id="servico-submit">Cadastrar serviço</button>
+        </div>
+      </form>
+
+      <aside class="summary">
+        <h3>Catálogo de serviços</h3>
+        <p>Os serviços cadastrados aqui aparecem automaticamente na vitrine (página inicial) e nas opções de agendamento.</p>
+      </aside>
+    </div>
+
+    <div id="lista-servicos-admin" class="table-wrap" style="margin-top:24px"></div>
+  </section>
+
+  <!-- RF19 - Cadastro de clientes -->
+  <section id="aba-clientes" class="admin-panel" hidden>
+    <div class="section-head">
+      <div><h3>Clientes cadastrados</h3><p>Clientes são cadastrados automaticamente ao concluírem um agendamento.</p></div>
+    </div>
+    <div id="lista-clientes" class="table-wrap"></div>
+  </section>
+
+  <!-- RF16 - Atribuição de funcionários por atendimento -->
+  <section id="aba-os" class="admin-panel" hidden>
+    <div class="section-head">
+      <div><h3>Ordens de Serviço</h3><p>Reatribua manualmente o funcionário responsável por cada atendimento, se necessário.</p></div>
+    </div>
+    <div id="lista-os" class="table-wrap"></div>
+  </section>
+</main>
+
+<footer>Ávila Hidráulicas — projeto demonstrativo</footer>
+<script src="app.js"></script>
+</body>
+</html>
