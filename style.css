@@ -168,6 +168,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);bo
 .summary{background:var(--light-blue);border:1px solid #d6e7f3;border-radius:6px;padding:20px;position:sticky;top:20px}
 .summary h3{margin:0 0 14px;font-size:16px}
 .summary p{margin:8px 0;font-size:13px}
+.summary .notif-falha{color:var(--danger)}
 .summary .total{border-top:1px solid #cbdde9;margin-top:14px;padding-top:14px;font-size:18px;font-weight:700;color:var(--navy)}
 
 .success-box{background:#edf7f0;border:1px solid #c8e0cf;color:#245b38;padding:22px;border-radius:6px}

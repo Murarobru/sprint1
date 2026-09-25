@@ -990,6 +990,112 @@ const servicos = [
   }
   
   /* =========================================================
+     NOTIFICAÇÕES AUTOMÁTICAS
+     RF07
+
+     Cada notificação possui:
+     - Tipo (confirmação, lembrete, aviso)
+     - Canal (e-mail/SMS/WhatsApp)
+     - Destinatário
+  ========================================================= */
+
+  function gerarNotificacoes(ordem) {
+    const cliente =
+      ordem.cliente;
+
+    /*
+      Simula o envio de uma notificação.
+
+      Existe uma pequena chance de falha
+      para demonstrar o log de falhas
+      de envio.
+    */
+
+    function simularStatusEnvio() {
+      if (Math.random() < 0.1) {
+        return "Falha";
+      }
+
+      return "Enviada";
+    }
+
+    /*
+      O lembrete é programado para
+      24 horas antes do atendimento.
+    */
+
+    const dataAtendimento =
+      new Date(
+        `${ordem.agendamento.data}T${ordem.agendamento.horario}:00`
+      );
+
+    const dataLembrete =
+      new Date(
+        dataAtendimento.getTime() -
+          24 * 60 * 60 * 1000
+      );
+
+    const lembreteTexto =
+      isNaN(
+        dataLembrete.getTime()
+      )
+        ? "-"
+        : dataLembrete.toLocaleString(
+            "pt-BR"
+          );
+
+    return [
+      {
+        tipo:
+          "Confirmação do agendamento",
+
+        canal: "E-mail",
+
+        destinatario:
+          cliente.email,
+
+        status:
+          simularStatusEnvio(),
+
+        detalhe:
+          `Confirmação referente à ${ordem.numero}.`
+      },
+
+      {
+        tipo:
+          "Lembrete de atendimento",
+
+        canal: "WhatsApp",
+
+        destinatario:
+          cliente.telefone,
+
+        status:
+          "Programada",
+
+        detalhe:
+          `Programada para ${lembreteTexto}.`
+      },
+
+      {
+        tipo:
+          "Aviso de nova Ordem de Serviço",
+
+        canal: "WhatsApp",
+
+        destinatario:
+          ordem.funcionario,
+
+        status:
+          simularStatusEnvio(),
+
+        detalhe:
+          `Funcionário responsável avisado sobre a ${ordem.numero}.`
+      }
+    ];
+  }
+
+  /* =========================================================
      CONFIRMAR AGENDAMENTO
      RF05 / RF06 / RF07
   ========================================================= */
@@ -1046,9 +1152,9 @@ const servicos = [
   
     const ordemServico = {
       numero: numeroOS,
-  
+
       status:
-        "Agendado",
+        "Confirmado",
   
       criadoEm:
         new Date().toLocaleString(
@@ -1096,23 +1202,69 @@ const servicos = [
   
     /* =====================================================
        RF07
-       NOTIFICAÇÕES
+       NOTIFICAÇÕES AUTOMÁTICAS
+
+       - Confirmação enviada ao cliente
+       - Lembrete antes do atendimento
+       - Notificação ao funcionário
     ===================================================== */
-  
-    const notificacao = {
-      cliente:
-        `Confirmação enviada para ${cliente.email} e ${cliente.telefone}.`,
-  
-      funcionario:
-        `Funcionário responsável notificado sobre a ${numeroOS}.`
-    };
-  
+
+    const notificacoes =
+      gerarNotificacoes(
+        ordemServico
+      );
+
     localStorage.setItem(
-      "notificacao",
+      "notificacoes",
       JSON.stringify(
-        notificacao
+        notificacoes
       )
     );
+
+    /* =====================================================
+       RF07
+       LOG DE FALHAS DE ENVIO
+    ===================================================== */
+
+    const falhasEnvio =
+      notificacoes.filter(
+        notificacao =>
+          notificacao.status ===
+          "Falha"
+      );
+
+    if (falhasEnvio.length > 0) {
+      const logFalhas =
+        JSON.parse(
+          localStorage.getItem(
+            "logFalhasNotificacoes"
+          ) || "[]"
+        );
+
+      falhasEnvio.forEach(
+        falha =>
+          logFalhas.push({
+            ...falha,
+
+            os: numeroOS,
+
+            registradoEm:
+              new Date().toLocaleString(
+                "pt-BR"
+              ),
+
+            motivo:
+              "Simulação de falha no canal de envio."
+          })
+      );
+
+      localStorage.setItem(
+        "logFalhasNotificacoes",
+        JSON.stringify(
+          logFalhas
+        )
+      );
+    }
   
     window.location.href =
       "ordem-servico.html";
@@ -1140,11 +1292,18 @@ const servicos = [
         ) || "null"
       );
   
-    const notificacao =
+    const notificacoes =
       JSON.parse(
         localStorage.getItem(
-          "notificacao"
-        ) || "null"
+          "notificacoes"
+        ) || "[]"
+      );
+
+    const logFalhas =
+      JSON.parse(
+        localStorage.getItem(
+          "logFalhasNotificacoes"
+        ) || "[]"
       );
   
     if (!ordem) {
@@ -1160,19 +1319,19 @@ const servicos = [
   
     container.innerHTML = `
       <div class="success-box">
-  
+
         <h2>
-          Agendamento Pendente
+          Agendamento Confirmado
         </h2>
-        <h2>
-          Agendamento será confirmado após análise do profissional
-        </h2>
-  
+
         <p>
-          A Ordem de Serviço foi
+          O status do atendimento foi
+          atualizado para
+          <strong>Confirmado</strong>
+          e a Ordem de Serviço foi
           gerada automaticamente.
         </p>
-  
+
       </div>
   
       <div
@@ -1269,30 +1428,109 @@ const servicos = [
       </div>
   
       <div class="summary">
-  
+
         <h3>
           Notificações automáticas
         </h3>
-  
-        <p>
-          ✓
-          ${notificacao?.cliente ||
-          "Cliente notificado."}
-        </p>
-  
-        <p>
-          ✓
-          ${notificacao?.funcionario ||
-          "Funcionário notificado."}
-        </p>
-  
+
+        ${notificacoes.length
+          ? notificacoes
+              .map(
+                notificacao => `
+                  <p class="${
+                    notificacao.status ===
+                    "Falha"
+                      ? "notif-falha"
+                      : ""
+                  }">
+                    ${
+                      notificacao.status ===
+                      "Falha"
+                        ? "✗"
+                        : "✓"
+                    }
+
+                    <strong>
+                      ${notificacao.tipo}
+                    </strong>
+
+                    <br>
+
+                    Canal:
+                    ${notificacao.canal}
+
+                    <br>
+
+                    Destinatário:
+                    ${notificacao.destinatario}
+
+                    <br>
+
+                    Status:
+                    ${notificacao.status}
+
+                    ${
+                      notificacao.detalhe
+                        ? `<br><small>${notificacao.detalhe}</small>`
+                        : ""
+                    }
+                  </p>
+                `
+              )
+              .join("")
+          : `
+            <p>
+              Nenhuma notificação
+              registrada.
+            </p>
+          `}
+
+        <hr>
+
+        <h3>
+          Log de falhas de envio
+        </h3>
+
+        ${logFalhas.length
+          ? logFalhas
+              .map(
+                falha => `
+                  <p class="notif-falha">
+                    ✗
+                    ${falha.tipo}
+                    (${falha.canal})
+                    para
+                    ${falha.destinatario}
+
+                    <br>
+
+                    <small>
+                      ${falha.registradoEm}
+                      ·
+                      ${falha.os}
+                      ·
+                      ${falha.motivo}
+                    </small>
+                  </p>
+                `
+              )
+              .join("")
+          : `
+            <p>
+              <small>
+                Nenhuma falha de envio
+                registrada.
+              </small>
+            </p>
+          `}
+
         <small>
           No demonstrativo, as notificações
           são apenas simuladas.
           Em produção, esta etapa pode
           integrar e-mail, WhatsApp ou SMS.
         </small>
-  
+
       </div>
     `;
   }
@@ -1319,7 +1557,7 @@ const servicos = [
     );
   
     localStorage.removeItem(
-      "notificacao"
+      "notificacoes"
     );
   
     window.location.href =
