@@ -1,4 +1,5 @@
-<!doctype html>
+<!-- Nicolas Brunes -->
+ <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -6,13 +7,40 @@
 </head>
 <body>
 <header><div class="container header-content">
-  <a class="brand" href="index.html"><span class="brand-mark">AH</span><span class="brand-copy"><strong>Avila Instalações Hidráulicas</strong><span>Instalações e manutenção</span></span></a>
-  <nav class="nav"><a href="index.html">Serviços</a><a href="agendamento.html">Agendar atendimento</a></nav>
+  <a class="brand" href="index.html"><span class="brand-mark">AH</span><span class="brand-copy"><strong>Ávila Hidráulicas</strong><span>Instalações e manutenção</span></span></a>
+  <nav class="nav"><a href="index.html">Serviços</a><a href="agendamento.html">Agendar atendimento</a><a href="alterar-agendamento.html">Alterar agendamento</a></nav>
 </div></header>
 <main class="container">
-  <section class="section-head"><div><h2>Serviços</h2><p>Selecione o tipo de atendimento que você precisa.</p></div></section>
+  <section class="hero">
+    <svg class="hero-pipes" viewBox="0 0 520 320" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path class="tubo" stroke-width="24" d="M540 262 H340 a36 36 0 0 1 -36 -36 V150 a36 36 0 0 0 -36 -36 H150 a36 36 0 0 1 -36 -36 V-20"/>
+        <path class="fluxo" stroke-width="3" d="M540 262 H340 a36 36 0 0 1 -36 -36 V150 a36 36 0 0 0 -36 -36 H150 a36 36 0 0 1 -36 -36 V-20"/>
+      </g>
+      <rect class="flange" x="430" y="246" width="12" height="32" rx="3"/>
+      <rect class="flange" x="288" y="186" width="32" height="12" rx="3"/>
+      <rect class="flange" x="190" y="98" width="12" height="32" rx="3"/>
+    </svg>
+    <div class="hero-grid">
+      <div>
+        <h2>Hidráulica resolvida, do vazamento à instalação.</h2>
+        <p>Escolha o serviço, reserve um horário livre e receba a ordem de serviço na hora. Sem criar conta.</p>
+        <div class="actions">
+          <a class="btn accent" href="agendamento.html">Agendar atendimento</a>
+          <a class="btn ghost" href="alterar-agendamento.html">Alterar agendamento</a>
+        </div>
+      </div>
+      <ol class="hero-steps">
+        <li><strong>Escolha o serviço</strong><span>Reparos, desentupimento, instalações e mais.</span></li>
+        <li><strong>Defina data e horário</strong><span>Só aparecem os horários livres.</span></li>
+        <li><strong>Receba a OS</strong><span>Todos os dados do atendimento em um só lugar.</span></li>
+      </ol>
+    </div>
+  </section>
+  <section class="section-head"><div><h2>Nossos serviços</h2><p>Selecione o tipo de atendimento que você precisa.</p></div></section>
   <section id="lista-servicos" class="grid"></section>
 </main>
-<footer>Ávila Hidráulicas — PI - FMP</footer>
+<footer>Ávila Hidráulicas — PI - FMP · <a href="admin-clientes.html">Área administrativa</a></footer>
 <script src="app.js"></script>
 </body></html>
+<!-- Nicolas Brunes -->
